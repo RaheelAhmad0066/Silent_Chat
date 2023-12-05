@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "567598109872",
+    "project_id": "silent-chat-box",
+    "storage_bucket": "silent-chat-box.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:567598109872:android:f5e7309d621dcc1fb19775",
+        "android_client_info": {
+          "package_name": "com.example.silentchatbox"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkwqQfWaQSv_si_VUT8ZIHP2yLazB0foM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
