@@ -54,22 +54,22 @@ class MyDateUtil {
     if (i == -1) return 'Last seen not available';
 
     DateTime time = DateTime.fromMillisecondsSinceEpoch(i);
-    DateTime now = DateTime.now();
+    // DateTime now = DateTime.now();
 
     String formattedTime = TimeOfDay.fromDateTime(time).format(context);
-    if (time.day == now.day &&
-        time.month == now.month &&
-        time.year == time.year) {
-      return 'Last seen today at $formattedTime';
-    }
+    // if (time.day == now.day &&
+    //     time.month == now.month &&
+    //     time.year == time.year) {
+    return 'Last seen today at $formattedTime';
+    // }
 
-    if ((now.difference(time).inHours / 24).round() == 1) {
-      return 'Last seen yesterday at $formattedTime';
-    }
+    // if ((now.difference(time).inHours / 24).round() == 1) {
+    //   return 'Last seen yesterday at $formattedTime';
+    // }
 
-    String month = _getMonth(time);
+    // String month = _getMonth(time);
 
-    return 'Last seen on ${time.day} $month on $formattedTime';
+    // return 'Last seen on ${time.day} $month on $formattedTime';
   }
 
   // get month name from month no. or index

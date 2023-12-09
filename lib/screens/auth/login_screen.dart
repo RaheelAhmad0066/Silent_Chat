@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lottie/lottie.dart';
 import '../../api/apis.dart';
 import '../../helper/dialogs.dart';
 import '../../main.dart';
@@ -18,7 +19,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _isAnimate = false;
-
 
   @override
   void initState() {
@@ -94,56 +94,73 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       //app bar
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Welcome to Silent Chat'),
-      ),
 
       //body
       body: WillPopScope(
         onWillPop: () async {
           return false;
         },
-        child: Stack(children: [
-          //app logo
-          AnimatedPositioned(
-              top: mq.height * .15,
-              right: _isAnimate ? mq.width * .25 : -mq.width * .5,
-              width: mq.width * .5,
-              duration: const Duration(seconds: 1),
-              child: Image.asset('images/icon.png')),
+        child: Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: Column(children: [
+            SizedBox(
+              height: mq.height * 0.2,
+            ),
+            Center(
+              child: LottieBuilder.asset(
+                'images/welcome.json',
+                width: mq.height * 0.3,
+              ),
+            ),
+            SizedBox(
+              height: mq.height * 0.02,
+            ),
+            Text(
+              'Welcome to Silent Chat',
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineSmall!
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: mq.height * 0.02,
+            ),
+            Text(
+              'Chat with your friends, share\n photo voice and files with\n high quality',
+              style: Theme.of(context)
+                  .textTheme
+                  .labelLarge!
+                  .copyWith(color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: mq.height * 0.09,
+            ),
+            ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    shape: const StadiumBorder(),
+                    elevation: 1),
+                onPressed: () {
+                  _handleGoogleBtnClick();
+                },
 
-          //google login button
-          Positioned(
-              bottom: mq.height * .15,
-              left: mq.width * .05,
-              width: mq.width * .9,
-              height: mq.height * .06,
-              child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: color,
-                      shape: const StadiumBorder(),
-                      elevation: 1),
-                  onPressed: () {
-                    _handleGoogleBtnClick();
-                  },
+                //google icon
+                icon: Image.asset('images/google.png', height: mq.height * .03),
 
-                  //google icon
-                  icon:
-                      Image.asset('images/google.png', height: mq.height * .03),
-
-                  //login with google label
-                  label: RichText(
-                    text: const TextSpan(
-                        style: TextStyle(color: Colors.black, fontSize: 16),
-                        children: [
-                          TextSpan(text: 'Login with '),
-                          TextSpan(
-                              text: 'Google',
-                              style: TextStyle(fontWeight: FontWeight.w500)),
-                        ]),
-                  ))),
-        ]),
+                //login with google label
+                label: RichText(
+                  text: const TextSpan(
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                      children: [
+                        TextSpan(text: 'Login with '),
+                        TextSpan(
+                            text: 'Google',
+                            style: TextStyle(fontWeight: FontWeight.w500)),
+                      ]),
+                ))
+          ]),
+        ),
       ),
     );
   }

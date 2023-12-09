@@ -32,6 +32,20 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   //for storing all messages
   List<Message> _list = [];
+  String shortenText(String text) {
+    // Set your desired maximum length for the text
+    final maxLength = 15;
+
+    // Check if the text exceeds the maximum length
+    if (text.length > maxLength) {
+      // Shorten the text and add an ellipsis
+      return text.substring(0, maxLength) + '...';
+    } else {
+      // Return the original text if it's within the limit
+      return text;
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -193,11 +207,16 @@ class _ChatScreenState extends State<ChatScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       //user name
-                      Text(list.isNotEmpty ? list[0].name : widget.user.name,
+                      Text(
+                          shortenText(list.isNotEmpty
+                              ? list[0].name
+                              : widget.user.name),
                           style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.black87,
-                              fontWeight: FontWeight.w500)),
+                            fontSize: 16,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w500,
+                            overflow: TextOverflow.fade,
+                          )),
 
                       //for adding some space
                       const SizedBox(height: 2),
@@ -217,17 +236,20 @@ class _ChatScreenState extends State<ChatScreen> {
                               fontSize: 13, color: Colors.green)),
                     ],
                   ),
+
                   sendCallButton(
+                    username: widget.user.name,
                     isVideoCall: false,
-                    Userid: widget.user.email.toString(),
+                    Userid: widget.user.id,
                     onCallFinished: (code, message, p2) {
                       onSendCallInvitationFinished;
                       onUserLogin();
                     },
                   ),
                   sendCallButton(
+                    username: widget.user.name,
                     isVideoCall: true,
-                    Userid: widget.user.email.toString(),
+                    Userid: widget.user.id,
                     onCallFinished: (code, message, p2) {
                       onSendCallInvitationFinished;
                       onUserLogin();
@@ -432,9 +454,10 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget sendCallButton(
       {required bool isVideoCall,
       required String Userid,
+      required String username,
       void Function(String code, String message, List<String>)?
           onCallFinished}) {
-    final invitees = getInvitesFromTextCtrl(Userid);
+    final invitees = getInvitesFromTextCtrl(Userid, username);
 
     return ZegoSendCallInvitationButton(
         isVideoCall: isVideoCall,
@@ -445,7 +468,7 @@ class _ChatScreenState extends State<ChatScreen> {
         onPressed: onCallFinished);
   }
 
-  List<ZegoUIKitUser> getInvitesFromTextCtrl(String textCtrlText) {
+  List<ZegoUIKitUser> getInvitesFromTextCtrl(String textCtrlText, String name) {
     final invitees = <ZegoUIKitUser>[];
 
     final inviteeIDs = textCtrlText.replaceAll('，', '');
@@ -454,10 +477,7 @@ class _ChatScreenState extends State<ChatScreen> {
         return;
       }
 
-      invitees.add(ZegoUIKitUser(
-        id: inviteeUserID,
-        name: 'user_$inviteeUserID',
-      ));
+      invitees.add(ZegoUIKitUser(id: inviteeUserID, name: name));
     });
 
     return invitees;
@@ -473,7 +493,7 @@ class _ChatScreenState extends State<ChatScreen> {
     ZegoUIKitPrebuiltCallInvitationService().init(
       appID: Mycall.appid /*input your AppID*/,
       appSign: Mycall.appsign /*input your AppSign*/,
-      userID: APIs.user.email.toString(),
+      userID: APIs.user.uid.toString(),
       userName: APIs.user.displayName.toString(),
       notifyWhenAppRunningInBackgroundOrQuit: false,
       plugins: [ZegoUIKitSignalingPlugin()],
@@ -509,7 +529,7 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 
 class Mycall {
-  static const int appid = 958443675;
+  static const int appid = 115187532;
   static const String appsign =
-      '5ec80d350b2a0ecd6c1d0839fd7b0613c75a3a0b3644f3be5d0ec82fcae7ae8f';
+      'f45860228be0b96961793fe69ef3a5c34438ea56f3c744ac23afca33bf8d03ad';
 }

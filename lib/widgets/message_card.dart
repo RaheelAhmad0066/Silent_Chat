@@ -4,12 +4,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../api/apis.dart';
 import '../helper/dialogs.dart';
 import '../helper/my_date_util.dart';
 import '../main.dart';
 import '../models/message.dart';
+import '../screens/home_screen.dart';
 
 // for showing single message details
 class MessageCard extends StatefulWidget {
@@ -108,7 +110,7 @@ class _MessageCardState extends State<MessageCard> {
 
             //double tick blue icon for message read
             if (widget.message.read.isNotEmpty)
-              const Icon(Icons.done_all_rounded, color: Colors.blue, size: 20),
+              Icon(Icons.done_all_rounded, color: color, size: 20),
 
             //for adding some space
             const SizedBox(width: 2),
@@ -189,8 +191,8 @@ class _MessageCardState extends State<MessageCard> {
                   ?
                   //copy option
                   _OptionItem(
-                      icon: const Icon(Icons.copy_all_rounded,
-                          color: Colors.blue, size: 26),
+                      icon:
+                          Icon(Icons.copy_all_rounded, color: color, size: 26),
                       name: 'Copy Text',
                       onTap: () async {
                         await Clipboard.setData(
@@ -205,8 +207,8 @@ class _MessageCardState extends State<MessageCard> {
                   :
                   //save option
                   _OptionItem(
-                      icon: const Icon(Icons.download_rounded,
-                          color: Colors.blue, size: 26),
+                      icon:
+                          Icon(Icons.download_rounded, color: color, size: 26),
                       name: 'Save Image',
                       onTap: () async {
                         try {
@@ -237,7 +239,7 @@ class _MessageCardState extends State<MessageCard> {
               //edit option
               if (widget.message.type == Type.text && isMe)
                 _OptionItem(
-                    icon: const Icon(Icons.edit, color: Colors.blue, size: 26),
+                    icon: Icon(Icons.edit, color: color, size: 26),
                     name: 'Edit Message',
                     onTap: () {
                       //for hiding bottom sheet
@@ -252,11 +254,10 @@ class _MessageCardState extends State<MessageCard> {
                     icon: const Icon(Icons.delete_forever,
                         color: Colors.red, size: 26),
                     name: 'Delete Message',
-                    onTap: () async {
-                      await APIs.deleteMessage(widget.message).then((value) {
-                        //for hiding bottom sheet
-                        Navigator.pop(context);
-                      });
+                    onTap: () {
+                      //for hiding bottom sheet
+                      Navigator.pop(context);
+                      deletedialog();
                     }),
 
               //separator or divider
@@ -268,7 +269,7 @@ class _MessageCardState extends State<MessageCard> {
 
               //sent time
               _OptionItem(
-                  icon: const Icon(Icons.remove_red_eye, color: Colors.blue),
+                  icon: Icon(Icons.remove_red_eye, color: color),
                   name:
                       'Sent At: ${MyDateUtil.getMessageTime(context: context, time: widget.message.sent)}',
                   onTap: () {}),
@@ -283,6 +284,18 @@ class _MessageCardState extends State<MessageCard> {
             ],
           );
         });
+  }
+
+  void showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.TOP,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.black,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
   }
 
   //dialog for updating message content
@@ -300,10 +313,10 @@ class _MessageCardState extends State<MessageCard> {
 
               //title
               title: Row(
-                children: const [
+                children: [
                   Icon(
                     Icons.message,
-                    color: Colors.blue,
+                    color: color,
                     size: 28,
                   ),
                   Text(' Update Message')
@@ -328,9 +341,9 @@ class _MessageCardState extends State<MessageCard> {
                       //hide alert dialog
                       Navigator.pop(context);
                     },
-                    child: const Text(
+                    child: Text(
                       'Cancel',
-                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                      style: TextStyle(color: color, fontSize: 16),
                     )),
 
                 //update button
@@ -339,10 +352,54 @@ class _MessageCardState extends State<MessageCard> {
                       //hide alert dialog
                       Navigator.pop(context);
                       APIs.updateMessage(widget.message, updatedMsg);
+                      showToast('Message is Edit');
                     },
-                    child: const Text(
+                    child: Text(
                       'Update',
-                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                      style: TextStyle(color: color, fontSize: 16),
+                    ))
+              ],
+            ));
+  }
+
+  void deletedialog() {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              //actions
+              title: Row(
+                children: [
+                  Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                  ),
+                  Text('Delete')
+                ],
+              ),
+              content: Text('delete message for everyone'),
+              actions: [
+                //cancel button
+                MaterialButton(
+                    onPressed: () {
+                      //hide alert dialog
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(color: color, fontSize: 16),
+                    )),
+
+                //update button
+                MaterialButton(
+                    onPressed: () async {
+                      //hide alert dialog
+                      Navigator.pop(context);
+                      showToast('Message is Delete');
+                      await APIs.deleteMessage(widget.message);
+                    },
+                    child: Text(
+                      'Update',
+                      style: TextStyle(color: color, fontSize: 16),
                     ))
               ],
             ));

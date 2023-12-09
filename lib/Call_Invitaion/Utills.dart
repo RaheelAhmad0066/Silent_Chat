@@ -4,7 +4,6 @@ import 'dart:io' show Platform;
 
 // Flutter imports:
 import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:crypto/crypto.dart';
 import 'package:device_info_plus/device_info_plus.dart';

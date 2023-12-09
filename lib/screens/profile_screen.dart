@@ -70,8 +70,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     });
                   });
                 },
-                icon: const Icon(Icons.logout),
-                label: const Text('Logout')),
+                icon: Icon(
+                  Icons.logout,
+                  color: Colors.white,
+                ),
+                label: const Text(
+                  'Logout',
+                  style: TextStyle(color: Colors.white),
+                )),
           ),
 
           //body
@@ -128,7 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             },
                             shape: const CircleBorder(),
                             color: Colors.white,
-                            child: const Icon(Icons.edit, color: Colors.black),
+                            child: Icon(Icons.edit, color: color),
                           ),
                         )
                       ],
@@ -182,7 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     SizedBox(height: mq.height * .05),
 
                     // update profile button
-                    ElevatedButton.icon(
+                    ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           backgroundColor: color,
                           shape: const StadiumBorder(),
@@ -196,9 +202,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           });
                         }
                       },
-                      icon: const Icon(Icons.edit, size: 28),
-                      label:
-                          const Text('UPDATE', style: TextStyle(fontSize: 16)),
+                      child: const Text('UPDATE',
+                          style: TextStyle(fontSize: 16, color: Colors.white)),
                     )
                   ],
                 ),

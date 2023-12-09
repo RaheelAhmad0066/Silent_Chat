@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_notification_channel/flutter_notification_channel.dart';
+import 'package:flutter_notification_channel/notification_importance.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'screens/splash_screen.dart';
 import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
@@ -10,9 +14,6 @@ late Size mq;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-
-  /// 1/5: define a navigator key
   final navigatorKey = GlobalKey<NavigatorState>();
 
   /// 2/5: set navigator key to ZegoUIKitPrebuiltCallInvitationService
@@ -22,9 +23,18 @@ void main() async {
       [ZegoUIKitSignalingPlugin()],
     );
   });
-  runApp(MyApp(
-    navigatorKey: navigatorKey,
-  ));
+  //enter full-screen
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
+  //for setting orientation to portrait only
+  SystemChrome.setPreferredOrientations(
+          [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
+      .then((value) {
+    _initializeFirebase();
+    runApp(MyApp(
+      navigatorKey: navigatorKey,
+    ));
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -60,4 +70,14 @@ class MyApp extends StatelessWidget {
         )),
         home: const SplashScreen());
   }
+}
+
+_initializeFirebase() async {
+  await Firebase.initializeApp();
+  var result = await FlutterNotificationChannel.registerNotificationChannel(
+      description: 'For Showing Message Notification',
+      id: 'chats',
+      importance: NotificationImportance.IMPORTANCE_HIGH,
+      name: 'Chats');
+  log('\nNotification Channel Result: $result');
 }

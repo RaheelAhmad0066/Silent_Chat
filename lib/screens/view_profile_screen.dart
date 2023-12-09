@@ -71,7 +71,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                   SizedBox(height: mq.height * .03),
 
                   // user email label
-                  Text(widget.user.email,
+                  Text(widget.user.name,
                       style:
                           const TextStyle(color: Colors.black87, fontSize: 16)),
 
