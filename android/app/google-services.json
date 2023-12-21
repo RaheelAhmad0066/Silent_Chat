@@ -1,26 +1,44 @@
 {
   "project_info": {
-    "project_number": "567598109872",
-    "project_id": "silent-chat-box",
-    "storage_bucket": "silent-chat-box.appspot.com"
+    "project_number": "737775124171",
+    "project_id": "dbmchat-4cf1f",
+    "storage_bucket": "dbmchat-4cf1f.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:567598109872:android:f5e7309d621dcc1fb19775",
+        "mobilesdk_app_id": "1:737775124171:android:deac294620f9999f8ea54e",
         "android_client_info": {
-          "package_name": "com.example.silentchatbox"
+          "package_name": "com.dbmpakistan.example"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "737775124171-48k76lb8tfqnabevqevso7529neb91n3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dbmpakistan.example",
+            "certificate_hash": "81acbab5d53c6da52fa0f02ac6e7c847ab8a86c6"
+          }
+        },
+        {
+          "client_id": "737775124171-0j3ctvfl4kipt5o4ra339l7ohtd3c9p3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyCkwqQfWaQSv_si_VUT8ZIHP2yLazB0foM"
+          "current_key": "AIzaSyB-kqjDy0DN1K0DEMrPIGqBH-E6aK-CS6A"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "737775124171-0j3ctvfl4kipt5o4ra339l7ohtd3c9p3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

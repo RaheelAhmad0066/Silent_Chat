@@ -285,6 +285,26 @@ class APIs {
     await ref.doc(time).set(message.toJson()).then((value) =>
         sendPushNotification(chatUser, type == Type.text ? msg : 'image'));
   }
+  // for sending Video
+  static Future<void> Sendvideo(
+      ChatUser chatUser, String msg, Type type) async {
+    //message sending time (also used as id)
+    final time = DateTime.now().millisecondsSinceEpoch.toString();
+
+    //message to send
+    final Message message = Message(
+        toId: chatUser.id,
+        msg: msg,
+        read: '',
+        type: type,
+        fromId: user.uid,
+        sent: time);
+
+    final ref = firestore
+        .collection('chats/${getConversationID(chatUser.id)}/messages/');
+    await ref.doc(time).set(message.toJson()).then((value) =>
+        sendPushNotification(chatUser, type == Type.text ? msg : 'videos'));
+  }
 
   //update read status of message
   static Future<void> updateMessageReadStatus(Message message) async {
@@ -323,6 +343,27 @@ class APIs {
     //updating image in firestore database
     final imageUrl = await ref.getDownloadURL();
     await sendMessage(chatUser, imageUrl, Type.image);
+  }
+
+// video
+  static Future<void> sendChatVideo(ChatUser chatUser, File file) async {
+    // Getting video file extension
+    final ext = file.path.split('.').last;
+
+    // Storage file ref with path
+    final ref = storage.ref().child(
+        'videos/${getConversationID(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext');
+
+    // Uploading video
+    await ref
+        .putFile(file, SettableMetadata(contentType: 'video/$ext'))
+        .then((p0) {
+      log('Data Transferred: ${p0.bytesTransferred / 1000} kb');
+    });
+
+    // Updating video in Firestore database
+    final videoUrl = await ref.getDownloadURL();
+    await Sendvideo(chatUser, videoUrl, Type.video);
   }
 
   //delete message

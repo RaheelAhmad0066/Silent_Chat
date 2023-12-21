@@ -337,6 +337,24 @@ class _ChatScreenState extends State<ChatScreen> {
                         hintStyle: TextStyle(color: color),
                         border: InputBorder.none),
                   )),
+                  IconButton(
+                    onPressed: () async {
+                      final ImagePicker picker = ImagePicker();
+
+                      // Pick a video
+                      final XFile? video =
+                          await picker.pickVideo(source: ImageSource.camera);
+                      if (video != null) {
+                        log('Video Path: ${video.path}');
+                        setState(() => _isUploading = true);
+
+                        await APIs.sendChatVideo(widget.user, File(video.path));
+                        setState(() => _isUploading = false);
+                      }
+                    },
+                    icon: const Icon(Icons.videocam_rounded,
+                        color: Colors.black, size: 26),
+                  ),
 
                   //pick image from gallery button
                   IconButton(
@@ -529,7 +547,7 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 
 class Mycall {
-  static const int appid = 115187532;
+  static const int appid = 810214504;
   static const String appsign =
-      'f45860228be0b96961793fe69ef3a5c34438ea56f3c744ac23afca33bf8d03ad';
+      'bcfa207ff061fec715a97adbc5a920c95581c03632861595b771c6ada96d8dc5';
 }

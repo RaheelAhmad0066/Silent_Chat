@@ -1,5 +1,5 @@
 import 'dart:developer';
-
+import 'package:video_player/video_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -67,20 +67,24 @@ class _MessageCardState extends State<MessageCard> {
                     widget.message.msg,
                     style: const TextStyle(fontSize: 15, color: Colors.black87),
                   )
-                :
-                //show image
-                ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: CachedNetworkImage(
-                      imageUrl: widget.message.msg,
-                      placeholder: (context, url) => const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.image, size: 70),
-                    ),
-                  ),
+                : widget.message.type == Type.image
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: CachedNetworkImage(
+                          imageUrl: widget.message.msg,
+                          placeholder: (context, url) => const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.image, size: 70),
+                        ),
+                      )
+                    : widget.message.type == Type.video
+                        ? VideoPlayerWidget(videoUrl: widget.message.msg)
+                        : Container(
+                            child: Text('data'),
+                          ),
           ),
         ),
 
@@ -133,34 +137,37 @@ class _MessageCardState extends State<MessageCard> {
             margin: EdgeInsets.symmetric(
                 horizontal: mq.width * .04, vertical: mq.height * .01),
             decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 218, 255, 176),
-                border: Border.all(color: Colors.lightGreen),
-                //making borders curved
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
-                    bottomLeft: Radius.circular(30))),
+              color: const Color.fromARGB(255, 218, 255, 176),
+              border: Border.all(color: Colors.lightGreen),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(30),
+                topRight: Radius.circular(30),
+                bottomLeft: Radius.circular(30),
+              ),
+            ),
             child: widget.message.type == Type.text
-                ?
-                //show text
-                Text(
+                ? Text(
                     widget.message.msg,
                     style: const TextStyle(fontSize: 15, color: Colors.black87),
                   )
-                :
-                //show image
-                ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: CachedNetworkImage(
-                      imageUrl: widget.message.msg,
-                      placeholder: (context, url) => const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.image, size: 70),
-                    ),
-                  ),
+                : widget.message.type == Type.image
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: CachedNetworkImage(
+                          imageUrl: widget.message.msg,
+                          placeholder: (context, url) => const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.image, size: 70),
+                        ),
+                      )
+                    : widget.message.type == Type.video
+                        ? VideoPlayerWidget(videoUrl: widget.message.msg)
+                        : Container(
+                            child: Text('data'),
+                          ), // Placeholder for other types or handle as needed
           ),
         ),
       ],
@@ -434,5 +441,60 @@ class _OptionItem extends StatelessWidget {
                         letterSpacing: 0.5)))
           ]),
         ));
+  }
+}
+
+class VideoPlayerWidget extends StatefulWidget {
+  final String videoUrl;
+
+  const VideoPlayerWidget({Key? key, required this.videoUrl}) : super(key: key);
+
+  @override
+  _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
+}
+
+class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
+  late VideoPlayerController _controller;
+  late Future<void> _initializeVideoPlayerFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.network(widget.videoUrl);
+    _initializeVideoPlayerFuture = _controller.initialize();
+    _controller
+        .setLooping(true); // Set this to true if you want the video to loop
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        if (_controller.value.isPlaying) {
+          _controller.pause();
+        } else {
+          _controller.play();
+        }
+      },
+      child: FutureBuilder(
+        future: _initializeVideoPlayerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return AspectRatio(
+              aspectRatio: _controller.value.aspectRatio,
+              child: VideoPlayer(_controller),
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+    );
   }
 }

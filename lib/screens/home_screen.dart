@@ -11,6 +11,7 @@ import '../api/apis.dart';
 import '../helper/dialogs.dart';
 import '../main.dart';
 import '../models/chat_user.dart';
+import '../pages/home_page.dart';
 import '../widgets/chat_user_card.dart';
 import 'chat_screen.dart';
 import 'profile_screen.dart';
@@ -144,16 +145,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
           //floating button to add new user
           floatingActionButton: Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: FloatingActionButton(
-                backgroundColor: color,
-                onPressed: () {
-                  _addChatUserDialog();
-                },
-                child: const Icon(
-                  Icons.add_comment_rounded,
-                  color: Colors.white,
-                )),
+            padding: EdgeInsets.only(
+              top: mq.height * 0.8,
+            ),
+            child: Column(
+              children: [
+                FloatingActionButton(
+                    backgroundColor: color,
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => HomePage()));
+                    },
+                    child: const Icon(
+                      Icons.group,
+                      color: Colors.white,
+                    )),
+                SizedBox(
+                  height: mq.height * 0.01,
+                ),
+                FloatingActionButton(
+                    backgroundColor: color,
+                    onPressed: () {
+                      _addChatUserDialog();
+                    },
+                    child: const Icon(
+                      Icons.add_comment_rounded,
+                      color: Colors.white,
+                    )),
+              ],
+            ),
           ),
 
           //body
