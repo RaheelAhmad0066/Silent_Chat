@@ -1,10 +1,10 @@
-import 'package:silent/helper/helper_function.dart';
-import 'package:silent/pages/profile_page.dart';
 import 'package:silent/pages/search_page.dart';
+import 'package:silent/screens/home_screen.dart';
 import 'package:silent/service/database_service.dart';
 import 'package:silent/widgets/group_tile.dart';
 import 'package:silent/widgets/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   String username = APIs.user.displayName.toString();
   String email = APIs.user.email.toString();
   String userDp = APIs.user.photoURL.toString();
+
   Stream<QuerySnapshot>? groups;
   bool _isLoading = false;
   String groupName = "";
@@ -106,114 +107,13 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
-      drawer: Drawer(
-        backgroundColor: Theme.of(context).backgroundColor,
-        child: SafeArea(
-          child: ListView(
-            padding: EdgeInsets.symmetric(vertical: 10),
-            children: [
-              (userDp == "")
-                  ? Icon(
-                      Icons.account_circle,
-                      size: 150,
-                      color: Colors.grey,
-                    )
-                  : CircleAvatar(
-                      radius: 80,
-                      backgroundImage: NetworkImage(userDp),
-                    ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(username,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              SizedBox(
-                height: 30,
-              ),
-              Divider(
-                height: 2,
-              ),
-              ListTile(
-                onTap: () {},
-                selectedColor: Theme.of(context).primaryColor,
-                selected: true,
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                leading: Icon(Icons.group),
-                title: Text(
-                  "Groups",
-                  style: TextStyle(color: Theme.of(context).primaryColor),
-                ),
-              ),
-              ListTile(
-                onTap: () {
-                  nextScreen(
-                      context,
-                      ProfilePage(
-                          // username: username,
-                          // email: email,
-                          ));
-                },
-                selectedColor: Theme.of(context).primaryColor,
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                leading: Icon(Icons.group),
-                title: Text(
-                  "Profile",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              ListTile(
-                onTap: () async {
-                  showDialog(
-                      context: context,
-                      builder: ((context) {
-                        return AlertDialog(
-                          title: Text("Logout"),
-                          content: Text("Are you sure you want to logout?"),
-                          actions: [
-                            IconButton(
-                              icon: Icon(
-                                Icons.cancel,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {},
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.done,
-                                color: Colors.green,
-                              ),
-                              onPressed: () async {
-                                // await authService.signOut();
-                                // // Navigator.of(context).pushAndRemoveUntil(
-                                // //     MaterialPageRoute(
-                                // //         builder: (context) =>
-                                // //             const LoginPage()),
-                                // //     (route) => false);
-                              },
-                            )
-                          ],
-                        );
-                      }));
-                },
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                leading: Icon(Icons.exit_to_app),
-                title: Text(
-                  "Log Out",
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
       body: groupList(),
       floatingActionButton: FloatingActionButton(
           backgroundColor: Theme.of(context).primaryColor,
-          child: Icon(Icons.add),
+          child: Icon(
+            Icons.add,
+            color: whit,
+          ),
           onPressed: () {
             popUpDialog(context);
           }),
@@ -243,6 +143,11 @@ class _HomePageState extends State<HomePage> {
                           });
                         },
                         decoration: InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.email,
+                              color: color,
+                            ),
+                            hintText: 'Email Id',
                             enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
                                   color: Theme.of(context).primaryColor,
@@ -348,10 +253,9 @@ class _HomePageState extends State<HomePage> {
             onTap: () {
               popUpDialog(context);
             },
-            child: Icon(
-              Icons.add_circle,
-              color: Colors.grey[700],
-              size: 75,
+            child: Image.asset(
+              'images/chat.png',
+              width: 100,
             ),
           ),
           const SizedBox(

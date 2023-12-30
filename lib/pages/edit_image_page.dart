@@ -4,8 +4,9 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'dart:ui';
 
-import 'package:silent/api/apis.dart';
+import 'package:silent/screens/home_screen.dart';
 import 'package:silent/service/database_service.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../api/apis.dart';
 import '../models/text_info.dart';
 
 class EditImagePage extends StatefulWidget {
@@ -136,9 +138,9 @@ class _EditImagePageState extends State<EditImagePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: color,
         actions: [
           IconButton(
               onPressed: () {
@@ -186,7 +188,12 @@ class _EditImagePageState extends State<EditImagePage> {
                             child: Stack(
                               alignment: Alignment.center,
                               children: [
-                                Center(
+                                Container(
+                                  decoration: BoxDecoration(
+                                      border:
+                                          Border.all(color: color, width: 2)),
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.9,
                                   child: (croppedImage != null)
                                       ? Image.file(
                                           File(croppedImage!.path),
@@ -196,7 +203,7 @@ class _EditImagePageState extends State<EditImagePage> {
                                         )
                                       : Image.file(
                                           File(loadedImage!.path),
-                                          fit: BoxFit.fill,
+                                          fit: BoxFit.cover,
                                           width:
                                               MediaQuery.of(context).size.width,
                                         ),
@@ -323,7 +330,7 @@ class _EditImagePageState extends State<EditImagePage> {
         padding: EdgeInsets.symmetric(horizontal: 10),
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-            color: Color(0xffb312b46), borderRadius: BorderRadius.circular(40)),
+            color: color, borderRadius: BorderRadius.circular(40)),
         child: Row(children: [
           Expanded(
               child: Padding(
@@ -445,8 +452,8 @@ class _EditImagePageState extends State<EditImagePage> {
   _cropImage() async {
     await takeScreenShort();
     croppedImage = await ImageCropper().cropImage(
-      sourcePath: loadedImage!.path,
-      //  (croppedImage == null) ? widget.imagePath : croppedImage!.path,
+      sourcePath:
+          (croppedImage == null) ? widget.imagePath : croppedImage!.path,
       aspectRatioPresets: [
         CropAspectRatioPreset.square,
         CropAspectRatioPreset.ratio3x2,
@@ -476,7 +483,7 @@ class _EditImagePageState extends State<EditImagePage> {
   sendMessage() async {
     await takeScreenShort();
     await DatabaseService(uid: APIs.user.uid)
-        .sendMedia(loadedImage!.path, widget.groupId)
+        .sendImage(loadedImage!.path, widget.groupId)
         .then((value) {
       Map<String, dynamic> chatMessageMap = {
         "message": messageController.text,

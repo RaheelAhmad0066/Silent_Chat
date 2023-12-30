@@ -7,6 +7,7 @@ import 'package:flutter_notification_channel/notification_importance.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'screens/splash_screen.dart';
 import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
+import 'theme/theme.dart';
 
 //global object for accessing device screen size
 late Size mq;
@@ -22,7 +23,7 @@ void main() async {
       [ZegoUIKitSignalingPlugin()],
     );
   });
-  //enter full-screen
+
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
   //for setting orientation to portrait only
@@ -58,15 +59,7 @@ class MyApp extends StatelessWidget {
           );
         },
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            appBarTheme: const AppBarTheme(
-          centerTitle: true,
-          elevation: 1,
-          iconTheme: IconThemeData(color: Colors.black),
-          titleTextStyle: TextStyle(
-              color: Colors.black, fontWeight: FontWeight.normal, fontSize: 19),
-          backgroundColor: Colors.white,
-        )),
+        theme: MyTheme.appTheme(context),
         home: const SplashScreen());
   }
 }

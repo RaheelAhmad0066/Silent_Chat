@@ -1,11 +1,11 @@
-import 'package:silent/api/apis.dart';
 import 'package:silent/pages/chat_page.dart';
+import 'package:silent/screens/home_screen.dart';
 import 'package:silent/service/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-
+import '../api/apis.dart';
 import '../widgets/widgets.dart';
 
 class SearchPage extends StatefulWidget {
@@ -28,25 +28,17 @@ class _SearchPageState extends State<SearchPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    // getCurrentUserIdAndName();
   }
 
   getName(String res) {
     return res.substring(res.indexOf("_") + 1);
   }
 
-  // getCurrentUserIdAndName() async {
-  //   await HelperFunctions.getUserNameFromSF().then((value) {
-  //     setState(() {
-  //       username = value!;
-  //     });
-  //   });
-
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xffb272336),
+        backgroundColor: Colors.white,
         appBar: AppBar(
           elevation: 0,
           centerTitle: true,
@@ -63,11 +55,11 @@ class _SearchPageState extends State<SearchPage> {
                 Expanded(
                     child: TextField(
                   controller: searchController,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
-                      border: InputBorder.none,
+                      border: UnderlineInputBorder(),
                       hintText: "Search Groups...",
-                      hintStyle: TextStyle(color: Colors.white)),
+                      hintStyle: TextStyle(color: Colors.black)),
                 )),
                 GestureDetector(
                   onTap: () {
@@ -77,12 +69,12 @@ class _SearchPageState extends State<SearchPage> {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
+                        color: color.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Icon(
                         Icons.search,
-                        color: Colors.white,
+                        color: color,
                       )),
                 )
               ],
@@ -162,15 +154,26 @@ class _SearchPageState extends State<SearchPage> {
       subtitle: Text("Admin: ${getName(admin)}"),
       trailing: InkWell(
         onTap: () async {
+          if (_isLoading) {
+            // Prevent multiple taps while loading
+            return;
+          }
+
+          setState(() {
+            _isLoading = true;
+          });
+
           await DatabaseService(uid: APIs.user.uid)
               .toggleJoin(groupId, groupName, username);
-
+          setState(() {
+            _isLoading = false;
+          });
           if (_isJoined) {
             setState(() {
               _isJoined = !_isJoined;
             });
-            showSnackbar(context, Colors.green,
-                "Successfully joined group ${groupName}");
+
+            showSnackbar(context, Colors.red, "Left group ${groupName}");
 
             Future.delayed(const Duration(seconds: 2), () {
               nextScreen(
@@ -185,34 +188,37 @@ class _SearchPageState extends State<SearchPage> {
           } else {
             setState(() {
               _isJoined = !_isJoined;
-              showSnackbar(context, Colors.red, "Left the group $groupName");
+              showSnackbar(context, Colors.green,
+                  "Successfully joined group $groupName");
             });
           }
         },
-        child: _isJoined
-            ? Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.black,
-                  border: Border.all(color: Colors.white, width: 1),
-                ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: const Text(
-                  "Joined",
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
-            : Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Theme.of(context).primaryColor,
-                ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: const Text("Join Now",
-                    style: TextStyle(color: Colors.white)),
-              ),
+        child: _isLoading
+            ? CircularProgressIndicator()
+            : _isJoined
+                ? Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.black,
+                      border: Border.all(color: Colors.white, width: 1),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    child: const Text(
+                      "Joined",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
+                : Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    child: const Text("Join Now",
+                        style: TextStyle(color: Colors.white)),
+                  ),
       ),
     );
   }

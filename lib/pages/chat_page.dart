@@ -1,6 +1,7 @@
 import 'package:silent/api/apis.dart';
 import 'package:silent/pages/edit_image_page.dart';
 import 'package:silent/pages/group_info.dart';
+import 'package:silent/screens/home_screen.dart';
 import 'package:silent/service/database_service.dart';
 import 'package:silent/widgets/message_tile.dart';
 import 'package:silent/widgets/widgets.dart';
@@ -61,30 +62,6 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  Future<void> selectMedia() async {
-    result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png', 'mp4', 'mov'],
-    );
-
-    if (result != null) {
-      String mediaPath = result!.files.single.path!;
-
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (_) => EditImagePage(
-                    imagePath: mediaPath,
-                    groupId: widget.groupId,
-                    username: widget.userName,
-                  )));
-
-      setState(() {});
-    } else {
-      // User canceled the picker
-    }
-  }
-
   @override
   void initState() {
     // TODO: implement initState
@@ -96,7 +73,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: Color(0xffb272336),
+      backgroundColor: Color.fromARGB(255, 250, 180, 163),
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
@@ -148,10 +125,10 @@ class _ChatPageState extends State<ChatPage> {
 
     DatabaseService(uid: APIs.user.uid).toggleRecentMessageSeen(widget.groupId);
 
-    // chats!.listen((event) {
-    //   DatabaseService(uid: APIs.user.uid)
-    //       .toggleRecentMessageSeen(widget.groupId);
-    // });
+    chats!.listen((event) {
+      DatabaseService(uid: APIs.user.uid)
+          .toggleRecentMessageSeen(widget.groupId);
+    });
   }
 
   chatMessages() {
@@ -190,7 +167,7 @@ class _ChatPageState extends State<ChatPage> {
         padding: EdgeInsets.symmetric(horizontal: 10),
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-            color: Color(0xffb312b46), borderRadius: BorderRadius.circular(40)),
+            color: color, borderRadius: BorderRadius.circular(40)),
         child: Row(children: [
           Expanded(
               child: Padding(
@@ -208,7 +185,7 @@ class _ChatPageState extends State<ChatPage> {
             children: [
               IconButton(
                 icon: const Icon(
-                  Icons.attach_file,
+                  Icons.image,
                   color: Colors.white,
                 ),
                 onPressed: () async {

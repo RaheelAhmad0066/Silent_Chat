@@ -24,7 +24,8 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-final color = Color(0xffAA9651);
+final color = Color.fromARGB(255, 250, 112, 73);
+final whit = Colors.white;
 
 class _HomeScreenState extends State<HomeScreen> {
   // for storing all users
@@ -95,6 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Scaffold(
           //app bar
           appBar: AppBar(
+            backgroundColor: color,
             leading: Image.asset('images/icon.png'),
             title: _isSearching
                 ? TextField(
@@ -118,7 +120,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       }
                     },
                   )
-                : const Text('Silent Chat'),
+                : Text(
+                    'DMB Chat',
+                    style: TextStyle(color: whit),
+                  ),
             actions: [
               //search user button
               IconButton(
@@ -127,9 +132,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       _isSearching = !_isSearching;
                     });
                   },
-                  icon: Icon(_isSearching
-                      ? CupertinoIcons.clear_circled_solid
-                      : Icons.search)),
+                  icon: Icon(
+                    _isSearching
+                        ? CupertinoIcons.clear_circled_solid
+                        : Icons.search,
+                    color: whit,
+                  )),
 
               //more features button
               IconButton(
@@ -139,7 +147,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         MaterialPageRoute(
                             builder: (_) => ProfileScreen(user: APIs.me)));
                   },
-                  icon: const Icon(Icons.more_vert))
+                  icon: Icon(
+                    Icons.more_vert,
+                    color: whit,
+                  ))
             ],
           ),
 

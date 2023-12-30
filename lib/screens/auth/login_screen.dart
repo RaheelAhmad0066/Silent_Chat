@@ -46,6 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if ((await APIs.userExists())) {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+          // saving the values to our shared preferences
         } else {
           await APIs.createUser().then((value) {
             Navigator.pushReplacement(
@@ -116,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
               height: mq.height * 0.02,
             ),
             Text(
-              'Welcome to Silent Chat',
+              'Welcome to DMB Chat',
               style: Theme.of(context)
                   .textTheme
                   .headlineSmall!
@@ -141,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     backgroundColor: Colors.white,
                     shape: const StadiumBorder(),
                     elevation: 1),
-                onPressed: () {
+                onPressed: () async {
                   _handleGoogleBtnClick();
                 },
 

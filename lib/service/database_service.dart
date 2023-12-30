@@ -186,36 +186,32 @@ class DatabaseService {
   }
 
   Future updateGroupDp(String imagePath, String groupId) async {
-    final imgId = DateTime.now().millisecondsSinceEpoch.toString();
-    Reference reference =
-        FirebaseStorage.instance.ref().child("groupdp").child("group_${imgId}");
+    try {
+      final imgId = DateTime.now().millisecondsSinceEpoch.toString();
+      Reference reference = FirebaseStorage.instance
+          .ref()
+          .child("groupdp")
+          .child("group_${imgId}");
 
-    await reference.putFile(File(imagePath));
+      await reference.putFile(File(imagePath));
 
-    var downloadURL = await reference.getDownloadURL();
+      var downloadURL = await reference.getDownloadURL();
 
-    await groupCollection.doc(groupId).update({"groupIcon": downloadURL});
+      await groupCollection.doc(groupId).update({"groupIcon": downloadURL});
+    } catch (e) {
+      print("Error updating group DP: $e");
+      throw e; // Rethrow the error to propagate it up the call stack
+    }
   }
 
-  Future<String> sendMedia(String mediaPath, String groupId) async {
-    final mediaId = DateTime.now().millisecondsSinceEpoch.toString();
-    Reference reference;
+  Future<String> sendImage(String imagePath, String groupId) async {
+    final imgId = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference reference = FirebaseStorage.instance
+        .ref()
+        .child("messageimages")
+        .child("message_${imgId}");
 
-    if (mediaPath.endsWith('.mp4') || mediaPath.endsWith('.mov')) {
-      // Video file
-      reference = FirebaseStorage.instance
-          .ref()
-          .child("messagevideos")
-          .child("message_${mediaId}.mp4");
-    } else {
-      // Image file
-      reference = FirebaseStorage.instance
-          .ref()
-          .child("messageimages")
-          .child("message_${mediaId}.jpg");
-    }
-
-    await reference.putFile(File(mediaPath));
+    await reference.putFile(File(imagePath));
 
     var downloadURL = await reference.getDownloadURL();
 

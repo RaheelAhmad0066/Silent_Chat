@@ -1,13 +1,15 @@
 import 'dart:io';
 
-import 'package:silent/api/apis.dart';
-import 'package:silent/helper/helper_function.dart';
+import 'package:silent/screens/home_screen.dart';
 import 'package:silent/service/database_service.dart';
 import 'package:silent/widgets/widgets.dart';
 import 'package:file_picker/file_picker.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+
+import '../api/apis.dart';
 
 class GroupInfo extends StatefulWidget {
   const GroupInfo(
@@ -31,7 +33,7 @@ class _GroupInfoState extends State<GroupInfo> {
 
   String imagePath = "";
   String groupDp = "";
-  String username = "";
+  String username = APIs.user.displayName.toString();
 
   selectImages() async {
     result = await FilePicker.platform.pickFiles();
@@ -61,11 +63,11 @@ class _GroupInfoState extends State<GroupInfo> {
   }
 
   getMembers() async {
-    await HelperFunctions.getUserNameFromSF().then(
-      (value) {
-        username = value!;
-      },
-    );
+    // await HelperFunctions.getUserNameFromSF().then(
+    //   (value) {
+    //     username = value!;
+    //   },
+    // );
 
     await DatabaseService(uid: APIs.user.uid)
         .getGroupMembers(widget.groupId)
@@ -79,69 +81,69 @@ class _GroupInfoState extends State<GroupInfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: whit,
         appBar: AppBar(
           centerTitle: true,
           elevation: 0,
           title: Text("Group Info"),
-          actions: [
-            IconButton(onPressed: () {}, icon: Icon(Icons.exit_to_app))
-          ],
+          // actions: [
+          //   IconButton(onPressed: () {}, icon: Icon(Icons.exit_to_app))
+          // ],
         ),
         body: Container(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: Column(
               children: [
-                Stack(
-                  children: [
-                    (imagePath == "")
-                        ? (widget.groupIcon == "")
-                            ? GestureDetector(
-                                onTap: selectImages,
-                                child: Icon(
-                                  Icons.account_circle,
-                                  size: 200,
-                                  color: Colors.grey[700],
-                                ),
-                              )
-                            : GestureDetector(
-                                onTap: selectImages,
-                                child: CircleAvatar(
-                                    radius: 100,
-                                    backgroundImage:
-                                        NetworkImage(widget.groupIcon)),
-                              )
-                        : GestureDetector(
-                            onTap: selectImages,
-                            child: CircleAvatar(
-                                radius: 100,
-                                backgroundImage: FileImage(File(imagePath))),
-                          ),
-                    Positioned(
-                        bottom: 10,
-                        right: 20,
-                        child: CircleAvatar(
-                          radius: 20,
-                          backgroundColor: Theme.of(context).primaryColor,
-                          child: Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                          ),
-                        ))
-                  ],
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                (imagePath == "")
-                    ? Container()
-                    : ElevatedButton(
-                        onPressed: () {
-                          uploadGroupDp();
-                        },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).primaryColor),
-                        child: Text("Save")),
+                // Stack(
+                //   children: [
+                //     (imagePath == "")
+                //         ? (widget.groupIcon == "")
+                //             ? GestureDetector(
+                //                 onTap: selectImages,
+                //                 child: Icon(
+                //                   Icons.account_circle,
+                //                   size: 200,
+                //                   color: Colors.grey[700],
+                //                 ),
+                //               )
+                //             : GestureDetector(
+                //                 onTap: selectImages,
+                //                 child: CircleAvatar(
+                //                     radius: 100,
+                //                     backgroundImage:
+                //                         NetworkImage(widget.groupIcon)),
+                //               )
+                //         : GestureDetector(
+                //             onTap: selectImages,
+                //             child: CircleAvatar(
+                //                 radius: 100,
+                //                 backgroundImage: FileImage(File(imagePath))),
+                //           ),
+                //     Positioned(
+                //         bottom: 10,
+                //         right: 20,
+                //         child: CircleAvatar(
+                //           radius: 20,
+                //           backgroundColor: Theme.of(context).primaryColor,
+                //           child: Icon(
+                //             Icons.edit,
+                //             color: Colors.white,
+                //           ),
+                //         ))
+                //   ],
+                // ),
+                // SizedBox(
+                //   height: 5,
+                // ),
+                // (imagePath == "")
+                //     ? Container()
+                //     : ElevatedButton(
+                //         onPressed: () {
+                //           uploadGroupDp();
+                //         },
+                //         style: ElevatedButton.styleFrom(
+                //             backgroundColor: Theme.of(context).primaryColor),
+                //         child: Text("Save")),
                 SizedBox(
                   height: 20,
                 ),

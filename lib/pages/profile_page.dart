@@ -1,20 +1,24 @@
 import 'dart:io';
 
-import 'package:silent/api/apis.dart';
-import 'package:silent/helper/helper_function.dart';
 import 'package:silent/service/database_service.dart';
 import 'package:file_picker/file_picker.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 import 'package:silent/pages/home_page.dart';
 
+import '../api/apis.dart';
 import '../widgets/widgets.dart';
 
 class ProfilePage extends StatefulWidget {
+  final String username;
+  final String email;
   const ProfilePage({
     Key? key,
+    required this.username,
+    required this.email,
   }) : super(key: key);
 
   @override
@@ -24,9 +28,8 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   FilePickerResult? result;
   String imagePath = "";
-  String userDp = "";
-  final username = APIs.user.displayName.toString();
-  final String email = APIs.user.email.toString();
+  String userDp = APIs.user.photoURL.toString();
+
   selectImages() async {
     result = await FilePicker.platform.pickFiles();
 
@@ -43,16 +46,16 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getUserData();
+    // getUserData();
   }
 
-  getUserData() async {
-    await HelperFunctions.getUserProfilePicFromSF().then((value) {
-      setState(() {
-        userDp = value!;
-      });
-    });
-  }
+  // getUserData() async {
+  //   await HelperFunctions.getUserProfilePicFromSF().then((value) {
+  //     setState(() {
+  //       userDp = value!;
+  //     });
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +88,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 height: 15,
               ),
               Text(
-                username,
+                widget.username,
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -140,10 +143,10 @@ class _ProfilePageState extends State<ProfilePage> {
                             IconButton(
                               onPressed: () async {
                                 // await authService.signOut();
-                                // // Navigator.pushReplacement(
-                                // //     context,
-                                // //     MaterialPageRoute(
-                                // //         builder: (_) => LoginPage()));
+                                // Navigator.pushReplacement(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (_) => LoginPage()));
                               },
                               icon: const Icon(
                                 Icons.done,
@@ -213,7 +216,7 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text("Full Name", style: TextStyle(fontSize: 17)),
-                Text(username, style: const TextStyle(fontSize: 17)),
+                Text(widget.username, style: const TextStyle(fontSize: 17)),
               ],
             ),
             const Divider(
@@ -223,7 +226,7 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text("Email", style: TextStyle(fontSize: 17)),
-                Text(email, style: const TextStyle(fontSize: 17)),
+                Text(widget.email, style: const TextStyle(fontSize: 17)),
               ],
             ),
             SizedBox(

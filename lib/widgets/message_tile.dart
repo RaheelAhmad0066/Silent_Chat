@@ -3,6 +3,7 @@ import 'package:silent/pages/imageview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:silent/screens/home_screen.dart';
 
 class MessageTile extends StatefulWidget {
   const MessageTile(
@@ -76,7 +77,8 @@ class _MessageTileState extends State<MessageTile> {
                           Text(
                             widget.sender.toUpperCase(),
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, color: whit),
                           ),
                           SizedBox(
                             height: 8,
@@ -94,7 +96,7 @@ class _MessageTileState extends State<MessageTile> {
                           Text(
                             widget.message,
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 14),
+                            style: TextStyle(fontSize: 14, color: whit),
                           )
                         ])),
                 Padding(

@@ -34,7 +34,7 @@ class _ChatScreenState extends State<ChatScreen> {
   List<Message> _list = [];
   String shortenText(String text) {
     // Set your desired maximum length for the text
-    final maxLength = 15;
+    final maxLength = 7;
 
     // Check if the text exceeds the maximum length
     if (text.length > maxLength) {
@@ -84,7 +84,7 @@ class _ChatScreenState extends State<ChatScreen> {
               flexibleSpace: _appBar(),
             ),
 
-            backgroundColor: const Color.fromARGB(255, 234, 248, 255),
+            backgroundColor: Color.fromARGB(255, 250, 180, 163),
 
             //body
             body: Column(
@@ -233,10 +233,12 @@ class _ChatScreenState extends State<ChatScreen> {
                                   context: context,
                                   lastActive: widget.user.lastActive),
                           style: const TextStyle(
-                              fontSize: 13, color: Colors.green)),
+                              fontSize: 10, color: Colors.white)),
                     ],
                   ),
-
+                  SizedBox(
+                    width: 50,
+                  ),
                   sendCallButton(
                     username: widget.user.name,
                     isVideoCall: false,
@@ -321,8 +323,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         FocusScope.of(context).unfocus();
                         setState(() => _showEmoji = !_showEmoji);
                       },
-                      icon: const Icon(Icons.emoji_emotions,
-                          color: Colors.black, size: 25)),
+                      icon: Icon(Icons.emoji_emotions, color: color, size: 25)),
 
                   Expanded(
                       child: TextField(
@@ -341,19 +342,34 @@ class _ChatScreenState extends State<ChatScreen> {
                     onPressed: () async {
                       final ImagePicker picker = ImagePicker();
 
-                      // Pick a video
-                      final XFile? video =
-                          await picker.pickVideo(source: ImageSource.camera);
-                      if (video != null) {
-                        log('Video Path: ${video.path}');
+                      // Pick a video from gallery
+                      final XFile? videoFromGallery =
+                          await picker.pickVideo(source: ImageSource.gallery);
+
+                      // If the user picked a video from the gallery
+                      if (videoFromGallery != null) {
+                        log('Video Path (Gallery): ${videoFromGallery.path}');
                         setState(() => _isUploading = true);
 
-                        await APIs.sendChatVideo(widget.user, File(video.path));
+                        await APIs.sendChatVideo(
+                            widget.user, File(videoFromGallery.path));
                         setState(() => _isUploading = false);
+                      } else {
+                        // If the user did not pick a video from the gallery, record a new one
+                        final XFile? videoFromCamera =
+                            await picker.pickVideo(source: ImageSource.camera);
+
+                        if (videoFromCamera != null) {
+                          log('Video Path (Camera): ${videoFromCamera.path}');
+                          setState(() => _isUploading = true);
+
+                          await APIs.sendChatVideo(
+                              widget.user, File(videoFromCamera.path));
+                          setState(() => _isUploading = false);
+                        }
                       }
                     },
-                    icon: const Icon(Icons.videocam_rounded,
-                        color: Colors.black, size: 26),
+                    icon: Icon(Icons.videocam_rounded, color: color, size: 26),
                   ),
 
                   //pick image from gallery button
@@ -373,8 +389,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           setState(() => _isUploading = false);
                         }
                       },
-                      icon: const Icon(Icons.image,
-                          color: Colors.black, size: 26)),
+                      icon: Icon(Icons.image, color: color, size: 26)),
 
                   //take image from camera button
                   IconButton(
@@ -393,8 +408,8 @@ class _ChatScreenState extends State<ChatScreen> {
                           setState(() => _isUploading = false);
                         }
                       },
-                      icon: const Icon(Icons.camera_alt_rounded,
-                          color: Colors.black, size: 26)),
+                      icon: Icon(Icons.camera_alt_rounded,
+                          color: color, size: 26)),
 
                   //adding some space
                   SizedBox(width: mq.width * .02),
@@ -423,7 +438,7 @@ class _ChatScreenState extends State<ChatScreen> {
             padding:
                 const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 10),
             shape: const CircleBorder(),
-            color: Colors.black,
+            color: color,
             child: const Icon(Icons.send, color: Colors.white, size: 28),
           )
         ],
@@ -547,7 +562,7 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 
 class Mycall {
-  static const int appid = 810214504;
+  static const int appid = 1762901195;
   static const String appsign =
-      'bcfa207ff061fec715a97adbc5a920c95581c03632861595b771c6ada96d8dc5';
+      'ac5ce4360fedc13214f87f4ceed1d4a5b3a42e4b8d1df91057e79ca0e9b2bb59';
 }
